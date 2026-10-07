@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Menu | Campus Snack Bar POS</title>
+<style>*{box-sizing:border-box;margin:0}body{font:16px 'Segoe UI',system-ui,sans-serif;background:#fff6ec;color:#2a211a;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:12px 5vw;background:#2a211a;color:#fff;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;text-decoration:none}.brand img{width:36px}
+.steps{display:flex;gap:6px;font-size:13px}.steps span{padding:5px 12px;border-radius:99px;background:#fff2;transition:.3s}.steps .on{background:#ff5a1f}
+main{max-width:1000px;margin:auto;padding:28px 5vw 110px;animation:in .5s}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+h1{font-size:30px}.sub{color:#8a7a6c;margin:4px 0 22px}
+.btn{border:0;border-radius:12px;padding:12px 22px;font:700 15px 'Segoe UI',sans-serif;background:#ff5a1f;color:#fff;cursor:pointer;text-decoration:none;display:inline-block;transition:.2s}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px #ff5a1f55}.btn.alt{background:#2a211a}.btn:disabled{opacity:.4;pointer-events:none}
+:focus-visible{outline:3px solid #ffb703;outline-offset:2px}
+.card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 6px 24px #0001}
+.acts{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-top:20px}
+.tot{display:flex;justify-content:space-between;font-size:24px;font-weight:800;margin:16px 0}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.item{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 6px 24px #0001;transition:.3s;animation:in .6s backwards}.item:hover{transform:translateY(-6px);box-shadow:0 14px 34px #0002}
+.w{overflow:hidden}.item img{width:100%;display:block;transition:.4s}.item:hover img{transform:scale(1.07)}
+.b{padding:16px}.b p{color:#ff5a1f;font-weight:800;font-size:22px;margin:4px 0 12px}kbd{background:#0003;border-radius:5px;padding:0 6px;margin-left:6px;font-size:12px}
+.bar{position:fixed;left:50%;bottom:20px;transform:translate(-50%,140px);background:#2a211a;color:#fff;border-radius:18px;padding:12px 14px 12px 24px;display:flex;gap:22px;align-items:center;transition:.4s;box-shadow:0 10px 30px #0004;z-index:6}.bar.on{transform:translate(-50%,0)}
+.toast{position:fixed;top:78px;right:20px;background:#2d9d5b;color:#fff;padding:10px 18px;border-radius:12px;opacity:0;transform:translateX(30px);transition:.3s;z-index:9}.toast.on{opacity:1;transform:none}
+</style></head><body>
+<main><h1>Menu</h1><p class="sub">Click Add to Cart, or press keys 1-6. Press C to open the cart.</p><section class="grid" id="grid"></section></main>
+<div class="bar" id="bar"><span><b id="n">0</b> items &middot; <b id="t"></b></span><a class="btn" href="cart.html">View Cart</a></div><div class="toast" id="toast" role="status"></div>
+<script src="js/app.js"></script>
+<script>
+hdr(0);
+grid.innerHTML=MENU.map((m,i)=>`<article class="item" style="animation-delay:${i*70}ms"><div class="w"><img src="${m.img}" alt="${m.name}"></div><div class="b"><h3>${m.name}</h3><p>${peso(m.price)}</p><button class="btn" data-id="${m.id}">Add to Cart<kbd>${i+1}</kbd></button></div></article>`).join("");
+let tm;function add(id){setQty(id,(cart()[id]||0)+1);bar_();toast.textContent="Added "+MENU.find(m=>m.id==id).name;toast.classList.add("on");clearTimeout(tm);tm=setTimeout(()=>toast.classList.remove("on"),1200)}
+function bar_(){n.textContent=count();t.textContent=peso(total());bar.classList.toggle("on",count()>0)}
+grid.onclick=e=>{const b=e.target.closest("button");if(b)add(b.dataset.id)};
+addEventListener("keydown",e=>{const m=MENU[e.key-1];if(m)add(m.id);if(e.key.toLowerCase()=="c")location="cart.html"});
+bar_();
+</script></body></html>
