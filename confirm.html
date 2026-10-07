@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Payment Confirmed | Campus Snack Bar POS</title>
+<style>*{box-sizing:border-box;margin:0}body{font:16px 'Segoe UI',system-ui,sans-serif;background:#fff6ec;color:#2a211a;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:12px 5vw;background:#2a211a;color:#fff;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;text-decoration:none}.brand img{width:36px}
+.steps{display:flex;gap:6px;font-size:13px}.steps span{padding:5px 12px;border-radius:99px;background:#fff2;transition:.3s}.steps .on{background:#ff5a1f}
+main{max-width:1000px;margin:auto;padding:28px 5vw 110px;animation:in .5s}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+h1{font-size:30px}.sub{color:#8a7a6c;margin:4px 0 22px}
+.btn{border:0;border-radius:12px;padding:12px 22px;font:700 15px 'Segoe UI',sans-serif;background:#ff5a1f;color:#fff;cursor:pointer;text-decoration:none;display:inline-block;transition:.2s}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px #ff5a1f55}.btn.alt{background:#2a211a}.btn:disabled{opacity:.4;pointer-events:none}
+:focus-visible{outline:3px solid #ffb703;outline-offset:2px}
+.card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 6px 24px #0001}
+.acts{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-top:20px}
+.tot{display:flex;justify-content:space-between;font-size:24px;font-weight:800;margin:16px 0}
+
+main{max-width:520px;text-align:center}.ok{width:96px;height:96px;margin:0 auto 12px;display:block}.ok circle{fill:#2d9d5b;transform-origin:center;animation:pop .5s}.ok path{fill:none;stroke:#fff;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:dr .6s .4s forwards}
+@keyframes pop{from{transform:scale(0)}}@keyframes dr{to{stroke-dashoffset:0}}
+.d{text-align:left;margin:20px 0}.d div{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed #e8d9c8}.d .chg{color:#1e7a45;font-weight:800;font-size:20px}
+</style></head><body>
+<main><svg class="ok" viewBox="0 0 96 96"><circle cx="48" cy="48" r="46"/><path d="M28 50l14 14 27-30"/></svg>
+<h1>Payment Confirmed</h1><p class="sub">Transaction completed successfully.</p>
+<div class="card"><div class="d" id="d"></div><button class="btn" id="go">View Receipt</button></div></main>
+<script src="js/app.js"></script>
+<script>
+hdr(3);const t=get("txn");if(!t)location="index.html";
+d.innerHTML=[["Transaction No.",t.id],["Date",new Date(t.date).toLocaleString("en-PH")],["Items",t.lines.reduce((s,l)=>s+l.q,0)],["Total",peso(t.total)],["Cash Paid",peso(t.paid)]].map(r=>`<div><span>${r[0]}</span><b>${r[1]}</b></div>`).join("")+`<div class="chg"><span>Change</span><span>${peso(t.change)}</span></div>`;
+go.onclick=()=>location="receipt.html";addEventListener("keydown",e=>{if(e.key=="Enter")go.click()});
+</script></body></html>
