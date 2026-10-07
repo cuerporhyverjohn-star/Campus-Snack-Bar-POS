@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Payment | Campus Snack Bar POS</title>
+<style>*{box-sizing:border-box;margin:0}body{font:16px 'Segoe UI',system-ui,sans-serif;background:#fff6ec;color:#2a211a;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:12px 5vw;background:#2a211a;color:#fff;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;text-decoration:none}.brand img{width:36px}
+.steps{display:flex;gap:6px;font-size:13px}.steps span{padding:5px 12px;border-radius:99px;background:#fff2;transition:.3s}.steps .on{background:#ff5a1f}
+main{max-width:1000px;margin:auto;padding:28px 5vw 110px;animation:in .5s}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+h1{font-size:30px}.sub{color:#8a7a6c;margin:4px 0 22px}
+.btn{border:0;border-radius:12px;padding:12px 22px;font:700 15px 'Segoe UI',sans-serif;background:#ff5a1f;color:#fff;cursor:pointer;text-decoration:none;display:inline-block;transition:.2s}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px #ff5a1f55}.btn.alt{background:#2a211a}.btn:disabled{opacity:.4;pointer-events:none}
+:focus-visible{outline:3px solid #ffb703;outline-offset:2px}
+.card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 6px 24px #0001}
+.acts{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-top:20px}
+.tot{display:flex;justify-content:space-between;font-size:24px;font-weight:800;margin:16px 0}
+
+.wrap{display:grid;grid-template-columns:1fr 1fr;gap:22px}@media(max-width:720px){.wrap{grid-template-columns:1fr}}
+.li{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #e8d9c8}
+label{font-weight:700}#amt{width:100%;font-size:32px;font-weight:800;padding:12px 16px;margin:8px 0;border:3px solid #f0e4d6;border-radius:14px;transition:.2s;font-family:inherit}#amt:focus{border-color:#ff5a1f;outline:0;box-shadow:0 0 0 5px #ff5a1f22}#amt.bad{border-color:#c0392b;animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#err{color:#c0392b;min-height:24px;font-weight:600}.quick{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}.quick button{border:2px solid #ffb98f;background:#fff;border-radius:99px;padding:7px 16px;font-weight:700;cursor:pointer;transition:.2s}.quick button:hover{background:#ff5a1f;color:#fff}
+.chg{background:#e9f8ef;border-radius:14px;padding:14px 18px;display:flex;justify-content:space-between;font-size:22px;font-weight:800;color:#1e7a45;margin-bottom:16px}
+</style></head><body>
+<main><h1>Payment</h1><p class="sub">Type the cash received. Change is computed instantly. Press Enter to confirm.</p>
+<div class="wrap"><div class="card"><h3>Order Summary</h3><div id="items"></div><div class="tot"><span>Amount Due</span><span id="due"></span></div></div>
+<form class="card" id="f" novalidate><label for="amt">Cash Amount (₱)</label><input id="amt" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00" autofocus autocomplete="off">
+<div id="err" role="alert"></div><div class="quick" id="quick"></div><div class="chg"><span>Change</span><span id="chg">₱0.00</span></div>
+<div class="acts"><a class="btn alt" href="cart.html">Back</a><button class="btn" id="pay" disabled>Confirm Payment</button></div></form></div></main>
+<script src="js/app.js"></script>
+<script>
+hdr(2);const T=total();if(!T)location="cart.html";
+items.innerHTML=lines().map(l=>`<div class="li"><span>${l.q} x ${l.name}</span><b>${peso(l.sub)}</b></div>`).join("");due.textContent=peso(T);
+quick.innerHTML=`<button type="button" data-v="${T}">Exact</button>`+[50,100,200,500,1000].filter(v=>v>=T).slice(0,4).map(v=>`<button type="button" data-v="${v}">${peso(v)}</button>`).join("");
+function check(){const v=amt.value.trim();let m="",ok=false,c=0,n=Math.round(Number(v)*100)/100;
+if(v==="")m="Enter the cash amount received.";else if(!isFinite(n)||n<=0)m="Enter a valid amount greater than zero.";else if(n<T)m="Insufficient payment. Short by "+peso(T-n)+".";else{ok=true;c=Math.round((n-T)*100)/100}
+err.textContent=v===""?"":m;amt.classList.toggle("bad",!ok&&v!=="");chg.textContent=peso(ok?c:0);pay.disabled=!ok;return ok?n:null}
+amt.oninput=check;quick.onclick=e=>{const b=e.target.closest("button");if(b){amt.value=b.dataset.v;check();amt.focus()}};
+f.onsubmit=e=>{e.preventDefault();const p=check();if(p==null){if(!amt.value.trim())err.textContent="Enter the cash amount received.";return}
+set("txn",{id:"SB-"+Date.now().toString().slice(-7),date:new Date().toISOString(),lines:lines(),total:T,paid:p,change:Math.round((p-T)*100)/100});location="confirm.html"};
+</script></body></html>
